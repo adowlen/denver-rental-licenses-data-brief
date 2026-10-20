@@ -1,0 +1,672 @@
+{
+ "meta": {
+  "dataset": "ODC_residential_rental_property_active_licenses (Denver Open Data, ArcGIS FeatureServer table 52)",
+  "publisher": "Department of Licensing and Consumer Protection (DLCP), City and County of Denver",
+  "snapshot": "warehouse snapshots/2026-10-20/rental_licenses.parquet (pulled 2026-10-20T12:32:53Z)",
+  "active_basis": "LICENSE_STATUS == 'License Issued - Active' exactly; Delinquent rows are never counted as active",
+  "grain": "one register row is a unit/address filing; rows sharing a LICENSE_NUM belong to one license. Figures are computed on two labeled bases: distinct LICENSE_NUM (license basis) and register rows (row basis)",
+  "holder_key": "ENTITY_NAME normalized: uppercase, whitespace collapsed",
+  "parcel_key": "schednum = str(int(PARCEL_NUM)).zfill(13) matched against parcel spine v6 (PARCEL_NUM is esriFieldTypeDouble in the source service)",
+  "acs_denver_county_units": 359581,
+  "acs_units_allocated_to_neighborhoods": 359351.49999999994,
+  "product_rule": "aggregates only in every shipped file category (brief and social markdown, stats.json, data/, code/, charts/, hero): no licensee name, street address, or parcel number value in any output; the raw register snapshot lives only in the warehouse"
+ },
+ "register": {
+  "rows": 38970,
+  "status_counter": {
+   "License Issued - Active": 38949,
+   "Delinquent": 21
+  },
+  "status_shares_pct": {
+   "License Issued - Active": 99.95,
+   "Delinquent": 0.05
+  },
+  "license_type_counter": {
+   "Residential Rental Property": 38970
+  },
+  "distinct_license_nums": 26962,
+  "distinct_license_nums_active": 26941,
+  "rows_per_license_distribution": {
+   "1": 24129,
+   "2": 1352,
+   "3": 635,
+   "4": 273,
+   "5": 174
+  },
+  "licenses_with_multiple_rows": 2833,
+  "rows_in_multi_row_licenses": 14841,
+  "max_rows_on_one_license": 697,
+  "entity_name_null_rows": 2,
+  "entity_name_null_rows_active": 2
+ },
+ "parcel_bridge": {
+  "basis": "all register rows",
+  "matched_rows": 38471,
+  "unmatched_rows": 499,
+  "match_rate_pct": 98.72,
+  "active_matched_rows": 38427,
+  "active_unmatched_rows": 522,
+  "active_match_rate_pct": 98.66,
+  "active_unmatched_distinct_parcels": 205,
+  "active_unmatched_distinct_licenses": 213,
+  "active_unmatched_rows_on_two_largest_parcels": 157,
+  "note": "the active bridge counts a row as matched when the spine assigns it a neighborhood (38,427 matched, 522 unassigned). Of the 522 unassigned active rows, 499 sit on parcels absent from the 2026-10-15 spine snapshot and 23 sit on 22 parcels that are present in spine v6 but carry a null neighborhood value; on pure schednum membership the bridge matches 38,450 active rows. The two largest unassigned parcels hold 157 of the 522 rows. Unmatched licenses are counted in every citywide total and excluded from parcel and neighborhood tables only"
+ },
+ "classification_active_rows": {
+  "rows": 38949,
+  "individual_name": {
+   "count": 18602,
+   "share_pct": 47.76
+  },
+  "business_entity_name": {
+   "count": 19230,
+   "share_pct": 49.37
+  },
+  "not_determined": {
+   "count": 1117,
+   "share_pct": 2.87
+  }
+ },
+ "classification_active_licenses": {
+  "licenses": 26941,
+  "individual_name": {
+   "count": 16012,
+   "share_pct": 59.43
+  },
+  "business_entity_name": {
+   "count": 9994,
+   "share_pct": 37.1
+  },
+  "not_determined": {
+   "count": 935,
+   "share_pct": 3.47
+  }
+ },
+ "classification_active_holders": {
+  "holders": 20780,
+  "individual_name": {
+   "count": 13516,
+   "share_pct": 65.04
+  },
+  "business_entity_name": {
+   "count": 6469,
+   "share_pct": 31.13
+  },
+  "not_determined": {
+   "count": 795,
+   "share_pct": 3.83
+  }
+ },
+ "classification_register_rows": {
+  "rows": 38970,
+  "individual_name": {
+   "count": 18614,
+   "share_pct": 47.76
+  },
+  "business_entity_name": {
+   "count": 19239,
+   "share_pct": 49.37
+  },
+  "not_determined": {
+   "count": 1117,
+   "share_pct": 2.87
+  }
+ },
+ "classification_rule": {
+  "business_tokens": [
+   "AGENCY",
+   "APARTMENTS",
+   "ASSOC",
+   "ASSOCIATION",
+   "AUTHORITY",
+   "BANK",
+   "CAPITAL",
+   "CHURCH",
+   "CLUB",
+   "CO",
+   "COLLEGE",
+   "COMPANY",
+   "CONSTRUCTION",
+   "CONSULTING",
+   "CORP",
+   "CORPORATION",
+   "DEVELOPMENT",
+   "DISTRICT",
+   "ENTERPRISE",
+   "ENTERPRISES",
+   "ESTATES",
+   "FOUNDATION",
+   "GLOBAL",
+   "GROUP",
+   "HOLDING",
+   "HOLDINGS",
+   "HOMES",
+   "HOSPITAL",
+   "HOTEL",
+   "INC",
+   "INTERNATIONAL",
+   "INVESTMENT",
+   "INVESTMENTS",
+   "LLC",
+   "LLLP",
+   "LLP",
+   "LP",
+   "LTD",
+   "MANAGEMENT",
+   "MINISTRY",
+   "PARTNERS",
+   "PARTNERSHIP",
+   "PC",
+   "PLLC",
+   "PROPERTIES",
+   "PROPERTY",
+   "REALTY",
+   "RENTAL",
+   "RENTALS",
+   "RESIDENCES",
+   "SCHOOL",
+   "SERVICES",
+   "SOCIETY",
+   "SOLUTIONS",
+   "SUITES",
+   "TRUST",
+   "UNIVERSITY",
+   "VENTURE",
+   "VENTURES"
+  ],
+  "rule": "business if any name token is a business token (same token set as the 2026-10-19 STR brief); else individual if 2-5 alphabetic tokens; else not determined",
+  "scope": "classification of the ENTITY_NAME string as filed, not of beneficial ownership"
+ },
+ "concentration_active_licenses": {
+  "basis": "active distinct LICENSE_NUM per normalized ENTITY_NAME (license basis)",
+  "units": 26939,
+  "distinct_holders": 20780,
+  "max_per_holder": 525,
+  "holders_by_band": {
+   "1": 18471,
+   "2": 1430,
+   "3-5": 685,
+   "6-10": 129,
+   "11+": 65
+  },
+  "units_by_band": {
+   "1": 18471,
+   "2": 2860,
+   "3-5": 2431,
+   "6-10": 918,
+   "11+": 2259
+  },
+  "top_shares_pct": {
+   "top_1": 1.95,
+   "top_5": 3.89,
+   "top_10": 4.86,
+   "top_25": 6.36
+  },
+  "share_held_by_holders_with_2plus_pct": 31.43,
+  "share_held_by_holders_with_11plus_pct": 8.39,
+  "units_whose_holder_has_exactly_1": 18471,
+  "share_whose_holder_has_exactly_1_pct": 68.57
+ },
+ "concentration_active_rows": {
+  "basis": "active register rows per normalized ENTITY_NAME (row basis; rows enumerate units on some licenses and not on others - see grain note)",
+  "units": 38947,
+  "distinct_holders": 20780,
+  "max_per_holder": 850,
+  "holders_by_band": {
+   "1": 16735,
+   "2": 1937,
+   "3-5": 1483,
+   "6-10": 365,
+   "11+": 260
+  },
+  "units_by_band": {
+   "1": 16735,
+   "2": 3874,
+   "3-5": 5364,
+   "6-10": 2652,
+   "11+": 10322
+  },
+  "top_shares_pct": {
+   "top_1": 2.18,
+   "top_5": 6.12,
+   "top_10": 8.14,
+   "top_25": 12.18
+  },
+  "share_held_by_holders_with_2plus_pct": 57.03,
+  "share_held_by_holders_with_11plus_pct": 26.5,
+  "units_whose_holder_has_exactly_1": 16735,
+  "share_whose_holder_has_exactly_1_pct": 42.97
+ },
+ "concentration_register_licenses": {
+  "basis": "all register rows, every status, distinct LICENSE_NUM per holder",
+  "units": 26960,
+  "distinct_holders": 20794,
+  "max_per_holder": 525,
+  "holders_by_band": {
+   "1": 18482,
+   "2": 1430,
+   "3-5": 688,
+   "6-10": 129,
+   "11+": 65
+  },
+  "units_by_band": {
+   "1": 18482,
+   "2": 2860,
+   "3-5": 2441,
+   "6-10": 918,
+   "11+": 2259
+  },
+  "top_shares_pct": {
+   "top_1": 1.95,
+   "top_5": 3.89,
+   "top_10": 4.86,
+   "top_25": 6.35
+  },
+  "share_held_by_holders_with_2plus_pct": 31.45,
+  "share_held_by_holders_with_11plus_pct": 8.38,
+  "units_whose_holder_has_exactly_1": 18482,
+  "share_whose_holder_has_exactly_1_pct": 68.55
+ },
+ "name_merge_sensitivity_active": {
+  "first_last_token_merge": {
+   "distinct_groups": 17496,
+   "max_licenses_per_group": 525,
+   "groups_with_2plus_licenses": 2796,
+   "licenses_in_groups_with_2plus": 12241,
+   "share_licenses_in_groups_with_2plus_pct": 45.44,
+   "max_rows_per_group": 850
+  },
+  "initial_surname_overmerge": {
+   "distinct_groups": 12979,
+   "max_licenses_per_group": 1160,
+   "groups_with_2plus_licenses": 2406,
+   "licenses_in_groups_with_2plus": 16368,
+   "share_licenses_in_groups_with_2plus_pct": 60.75,
+   "max_rows_per_group": 2942
+  }
+ },
+ "parcels_active": {
+  "basis": "active rows matched to the parcel spine and assigned a neighborhood (38,427 of 38,949 active rows); every count in this block is computed over the 26,394 distinct matched parcels only; the 522 unassigned active rows are excluded",
+  "rows_with_parcel_match": 38427,
+  "distinct_parcels": 26394,
+  "distinct_parcels_matched_to_spine": 26394,
+  "parcels_with_multiple_rows": 2846,
+  "rows_on_multiple_row_parcels": 14879,
+  "share_of_matched_rows_on_multiple_row_parcels_pct": 38.7,
+  "max_rows_on_one_parcel": 697,
+  "largest_parcel_neighborhood": "North Capitol Hill",
+  "largest_parcel_units_on_parcel_record": 229.0,
+  "largest_parcel_distinct_licenses": 1,
+  "second_largest_parcel_rows": 444,
+  "second_largest_parcel_neighborhood": "Central Park",
+  "second_largest_parcel_units_on_parcel_record": 398.0,
+  "second_largest_parcel_distinct_licenses": 5,
+  "parcels_with_multiple_distinct_licenses": 205,
+  "max_distinct_licenses_on_one_parcel": 29,
+  "licenses_on_multiple_license_parcels": 559,
+  "parcel_with_max_distinct_licenses_neighborhood": "Hampden South",
+  "parcel_with_max_distinct_licenses_units_on_parcel_record": 8.0,
+  "row_count_distribution_parcels_by_row_count_top": {
+   "1": 23548,
+   "2": 1357,
+   "3": 625,
+   "4": 277,
+   "5": 173
+  }
+ },
+ "grain_check": {
+  "distinct_matched_licensed_parcels": 26394,
+  "of_those_parcels_with_tot_units_recorded": 26309,
+  "parcels_with_tot_units_null_on_spine": 85,
+  "sum_tot_units_over_licensed_parcels_with_tot_recorded": 133839.0,
+  "sum_tot_units_all_spine_parcels": 445057.0,
+  "share_of_spine_tot_units_on_licensed_parcels_pct": 30.1,
+  "active_rows_on_matched_parcels": 38427,
+  "parcels_where_rows_equal_tot_units": 22107,
+  "parcels_where_rows_below_tot_units": 2745,
+  "parcels_where_rows_above_tot_units": 1457,
+  "single_row_parcels": 23548,
+  "single_row_parcels_with_tot_units_10plus": 1026,
+  "tot_units_on_single_row_parcels_with_tot_10plus": 73501.0,
+  "reading": "rows neither equal licenses nor reliably equal units: most single-row parcels carry TOT_UNITS of 1 on the assessor record, but 1,026 single-row parcels carry 10 or more units on their record (a single row filed for a whole building), while unit-enumerated licenses file hundreds of rows on one parcel and can exceed the parcel record's TOT_UNITS. Unit coverage is therefore reported from the assessor TOT_UNITS sum over licensed parcels, never from row counts."
+ },
+ "neighborhoods": {
+  "active_rows_with_neighborhood": 38427,
+  "active_rows_without_neighborhood": 522,
+  "neighborhoods_total": 78,
+  "neighborhoods_with_1plus_active_rows": 78,
+  "neighborhoods_with_zero_active_rows": 0,
+  "zero_active_neighborhoods": [],
+  "citywide_active_rows_per_1000_units_assigned_basis": 106.9,
+  "citywide_active_rows_per_1000_units_all_active_rows": 108.4,
+  "top_by_count": [
+   {
+    "neighborhood": "Capitol Hill",
+    "rental_active_rows": 1887,
+    "acs_units": 12681.3,
+    "rental_rows_per_1000_units": 148.8,
+    "rental_distinct_licenses": 1008,
+    "str_active_licenses": 28,
+    "str_per_1000_units": 2.21
+   },
+   {
+    "neighborhood": "Central Park",
+    "rental_active_rows": 1617,
+    "acs_units": 12563.2,
+    "rental_rows_per_1000_units": 128.71,
+    "rental_distinct_licenses": 855,
+    "str_active_licenses": 44,
+    "str_per_1000_units": 3.5
+   },
+   {
+    "neighborhood": "Five Points",
+    "rental_active_rows": 1503,
+    "acs_units": 15648.5,
+    "rental_rows_per_1000_units": 96.05,
+    "rental_distinct_licenses": 784,
+    "str_active_licenses": 151,
+    "str_per_1000_units": 9.65
+   },
+   {
+    "neighborhood": "Speer",
+    "rental_active_rows": 1321,
+    "acs_units": 9332.9,
+    "rental_rows_per_1000_units": 141.54,
+    "rental_distinct_licenses": 818,
+    "str_active_licenses": 51,
+    "str_per_1000_units": 5.46
+   },
+   {
+    "neighborhood": "Gateway - Green Valley Ranch",
+    "rental_active_rows": 1227,
+    "acs_units": 16720.6,
+    "rental_rows_per_1000_units": 73.38,
+    "rental_distinct_licenses": 1198,
+    "str_active_licenses": 68,
+    "str_per_1000_units": 4.07
+   },
+   {
+    "neighborhood": "North Capitol Hill",
+    "rental_active_rows": 1088,
+    "acs_units": 5934.7,
+    "rental_rows_per_1000_units": 183.33,
+    "rental_distinct_licenses": 273,
+    "str_active_licenses": 19,
+    "str_per_1000_units": 3.2
+   },
+   {
+    "neighborhood": "West Colfax",
+    "rental_active_rows": 1088,
+    "acs_units": 7186.2,
+    "rental_rows_per_1000_units": 151.4,
+    "rental_distinct_licenses": 768,
+    "str_active_licenses": 105,
+    "str_per_1000_units": 14.61
+   },
+   {
+    "neighborhood": "Congress Park",
+    "rental_active_rows": 1078,
+    "acs_units": 6331.2,
+    "rental_rows_per_1000_units": 170.27,
+    "rental_distinct_licenses": 589,
+    "str_active_licenses": 46,
+    "str_per_1000_units": 7.27
+   },
+   {
+    "neighborhood": "Highland",
+    "rental_active_rows": 970,
+    "acs_units": 7071.3,
+    "rental_rows_per_1000_units": 137.17,
+    "rental_distinct_licenses": 740,
+    "str_active_licenses": 112,
+    "str_per_1000_units": 15.84
+   },
+   {
+    "neighborhood": "Westwood",
+    "rental_active_rows": 774,
+    "acs_units": 5148.6,
+    "rental_rows_per_1000_units": 150.33,
+    "rental_distinct_licenses": 521,
+    "str_active_licenses": 9,
+    "str_per_1000_units": 1.75
+   },
+   {
+    "neighborhood": "City Park West",
+    "rental_active_rows": 767,
+    "acs_units": 3820.6,
+    "rental_rows_per_1000_units": 200.75,
+    "rental_distinct_licenses": 347,
+    "str_active_licenses": 39,
+    "str_per_1000_units": 10.21
+   },
+   {
+    "neighborhood": "University",
+    "rental_active_rows": 754,
+    "acs_units": 3814.0,
+    "rental_rows_per_1000_units": 197.69,
+    "rental_distinct_licenses": 603,
+    "str_active_licenses": 25,
+    "str_per_1000_units": 6.55
+   }
+  ],
+  "top_by_rate_per_1000": [
+   {
+    "neighborhood": "Whittier",
+    "rental_active_rows": 644,
+    "acs_units": 2251.0,
+    "rental_rows_per_1000_units": 286.1,
+    "rental_distinct_licenses": 319,
+    "str_active_licenses": 61,
+    "str_per_1000_units": 27.1
+   },
+   {
+    "neighborhood": "Clayton",
+    "rental_active_rows": 374,
+    "acs_units": 1830.5,
+    "rental_rows_per_1000_units": 204.32,
+    "rental_distinct_licenses": 250,
+    "str_active_licenses": 35,
+    "str_per_1000_units": 19.12
+   },
+   {
+    "neighborhood": "City Park West",
+    "rental_active_rows": 767,
+    "acs_units": 3820.6,
+    "rental_rows_per_1000_units": 200.75,
+    "rental_distinct_licenses": 347,
+    "str_active_licenses": 39,
+    "str_per_1000_units": 10.21
+   },
+   {
+    "neighborhood": "University",
+    "rental_active_rows": 754,
+    "acs_units": 3814.0,
+    "rental_rows_per_1000_units": 197.69,
+    "rental_distinct_licenses": 603,
+    "str_active_licenses": 25,
+    "str_per_1000_units": 6.55
+   },
+   {
+    "neighborhood": "Cole",
+    "rental_active_rows": 393,
+    "acs_units": 2019.8,
+    "rental_rows_per_1000_units": 194.57,
+    "rental_distinct_licenses": 254,
+    "str_active_licenses": 50,
+    "str_per_1000_units": 24.75
+   },
+   {
+    "neighborhood": "Northeast Park Hill",
+    "rental_active_rows": 668,
+    "acs_units": 3505.1,
+    "rental_rows_per_1000_units": 190.58,
+    "rental_distinct_licenses": 417,
+    "str_active_licenses": 21,
+    "str_per_1000_units": 5.99
+   },
+   {
+    "neighborhood": "North Capitol Hill",
+    "rental_active_rows": 1088,
+    "acs_units": 5934.7,
+    "rental_rows_per_1000_units": 183.33,
+    "rental_distinct_licenses": 273,
+    "str_active_licenses": 19,
+    "str_per_1000_units": 3.2
+   },
+   {
+    "neighborhood": "Villa Park",
+    "rental_active_rows": 557,
+    "acs_units": 3101.5,
+    "rental_rows_per_1000_units": 179.59,
+    "rental_distinct_licenses": 406,
+    "str_active_licenses": 28,
+    "str_per_1000_units": 9.03
+   },
+   {
+    "neighborhood": "Barnum",
+    "rental_active_rows": 361,
+    "acs_units": 2069.0,
+    "rental_rows_per_1000_units": 174.48,
+    "rental_distinct_licenses": 258,
+    "str_active_licenses": 17,
+    "str_per_1000_units": 8.22
+   },
+   {
+    "neighborhood": "Platt Park",
+    "rental_active_rows": 601,
+    "acs_units": 3519.6,
+    "rental_rows_per_1000_units": 170.76,
+    "rental_distinct_licenses": 401,
+    "str_active_licenses": 45,
+    "str_per_1000_units": 12.79
+   },
+   {
+    "neighborhood": "Congress Park",
+    "rental_active_rows": 1078,
+    "acs_units": 6331.2,
+    "rental_rows_per_1000_units": 170.27,
+    "rental_distinct_licenses": 589,
+    "str_active_licenses": 46,
+    "str_per_1000_units": 7.27
+   },
+   {
+    "neighborhood": "Rosedale",
+    "rental_active_rows": 246,
+    "acs_units": 1467.7,
+    "rental_rows_per_1000_units": 167.61,
+    "rental_distinct_licenses": 173,
+    "str_active_licenses": 7,
+    "str_per_1000_units": 4.77
+   }
+  ],
+  "top5_count_share_pct_of_assigned_rows": 19.7,
+  "top10_count_share_pct_of_assigned_rows": 32.7,
+  "median_neighborhood_rate_per_1000": 107.1,
+  "median_neighborhood_rate_basis": "median across all 78 neighborhoods (no zero-row neighborhoods exist in this register, so the with-rows median is identical)"
+ },
+ "str_comparison": {
+  "str_brief_date": "2026-10-19",
+  "str_active_licenses": 2083,
+  "ltr_active_distinct_licenses": 26941,
+  "ltr_active_rows": 38949,
+  "ratio_ltr_licenses_to_str_licenses": 12.9,
+  "ratio_ltr_rows_to_str_licenses": 18.7,
+  "str_citywide_per_1000_units": 5.8,
+  "ltr_citywide_rows_per_1000_units": 108.4,
+  "spearman_neighborhood_rates_ltr_rows_vs_str_licenses": 0.654,
+  "spearman_neighborhood_counts_ltr_rows_vs_str_licenses": 0.698,
+  "neighborhoods_compared": 78,
+  "str_zero_neighborhoods": [
+   "Auraria",
+   "Kennedy",
+   "Sun Valley"
+  ],
+  "note": "the two registers measure different things on different grains: STR counts are licenses (one license per licensee, one unit per license under the primary-residence rules); LTR rows are unit/address filings under licenses that can cover a whole building. Rates are printed side by side with their bases labeled, never added or merged."
+ },
+ "vintage_active": {
+  "basis": "year prefix of LICENSE_NUM (the license number encodes its issue year, e.g. 2023-BFN-...); this service carries no original-issue date field, and RENEWAL_CREATED is a 1900 sentinel on active rows (see field_hygiene), so no date-field vintage is claimed",
+  "distinct_licenses_by_prefix_year": {
+   "2022": 2233,
+   "2023": 13292,
+   "2024": 6203,
+   "2025": 3088,
+   "2026": 2125
+  },
+  "rows_by_prefix_year": {
+   "2022": 5703,
+   "2023": 19062,
+   "2024": 7485,
+   "2025": 3825,
+   "2026": 2874
+  },
+  "share_licenses_prefix_2023_pct": 49.3,
+  "share_licenses_prefix_2023_or_later_pct": 91.7
+ },
+ "expiry_hygiene": {
+  "active_rows_with_expiration_before_pull_date": 2,
+  "share_of_active_rows_pct": 0.005,
+  "all_rows_with_expiration_before_pull_date": 23,
+  "delinquent_rows_with_expiration_before_pull_date": 21,
+  "active_expiration_by_year": {
+   "2026": 2921,
+   "2027": 18095,
+   "2028": 10576,
+   "2029": 3885,
+   "2030": 3470,
+   "2031": 2
+  },
+  "note": "status and expiration fields are recorded as published; a past expiration date on an active-status row is a field disagreement printed without a compliance claim. The DLCP renewal FAQ provides for a 90-day grace period after expiration, which the register alone cannot apply row by row."
+ },
+ "field_hygiene": {
+  "multiple_licenses_counter": {
+   "Stand Alone": 38970
+  },
+  "multiple_licenses_reading": "constant 'Stand Alone' on all rows, including the 697 rows of the largest multi-unit license; not a usable signal - multi-row and multi-license patterns in this brief are computed from LICENSE_NUM and the parcel bridge",
+  "relationship_counter_top": {
+   "nan": 38949,
+   "Renewal": 21
+  },
+  "renewal_status_counter_top": {
+   "nan": 38949,
+   "Pending": 21
+  },
+  "renewal_created_sentinel": {
+   "value_1_1_1900_rows": 38949,
+   "share_pct": 99.95,
+   "non_sentinel_rows": 21,
+   "reading": "RENEWAL_CREATED reads 1/1/1900 on every active row; the only non-sentinel values are the 21 Delinquent rows (2026 dates). The field is a sentinel on this basis and is used for nothing in this brief."
+  },
+  "zip_sentinel": {
+   "zip_zero_rows": 3436,
+   "zip_null_rows": 773,
+   "reading": "ZIP is 0 on 3,436 rows and null on 773; ZIP is used for no figure in this brief. 0 and null are treated as unknown, never as a ZIP code."
+  },
+  "parcel_num_field": {
+   "source_type": "esriFieldTypeDouble",
+   "null_rows": 0,
+   "zero_rows": 0,
+   "digit_length_counter": {
+    "12": 37169,
+    "11": 1742,
+    "10": 59
+   },
+   "reading": "PARCEL_NUM values are integers of 10 to 12 digits (leading zeros dropped by the Double field in varying numbers); the canonical 13-character schednum restores them by zfill and matches the spine at 98.7 percent of rows. No null, zero, or negative sentinel parcel values exist in this pull."
+  },
+  "exact_duplicate_rows": {
+   "duplicate_license_parcel_address_groups": 6,
+   "duplicate_rows_total": 12,
+   "reading": "6 license/parcel/address combinations appear twice (12 rows, 6 excess rows, 0.02 percent of active rows). They are counted as published; removing them changes no printed figure at its printed precision."
+  },
+  "double_filed_license": {
+   "licenses": 1,
+   "rows": 172,
+   "distinct_addresses": 86,
+   "parcels": 2,
+   "reading": "one license with 100 or more rows files each of its 86 unit addresses twice, once under each of two parcel numbers (one of them the largest unmatched parcel in the bridge). Counted as published; the pattern is disclosed in Findings 1 and 5. The other 11 licenses with 100 or more rows each sit on one parcel with all-distinct addresses."
+  },
+  "licenses_spanning_multiple_parcels": 19,
+  "licenses_spanning_multiple_neighborhoods": 8,
+  "holders_per_license_max": 1,
+  "licenses_with_multiple_holders": 0
+ }
+}
