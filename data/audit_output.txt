@@ -1,0 +1,88 @@
+snapshot rows 38970
+
+== 10.1.4 categorical exhaustiveness (counters recorded before any filter) ==
+LICENSE_STATUS full counter: {'Delinquent': 21, 'License Issued - Active': 38949}
+LICENSE_TYPE full counter: {'Residential Rental Property': 38970}
+MULTIPLE_LICENSES full counter: {'Stand Alone': 38970}
+RELATIONSHIP non-null values: Counter({'Renewal': 21})
+RENEWAL_STATUS non-null values: Counter({'Pending': 21})
+
+== 10.1.1 zero/null sentinel traps ==
+ENTITY_NAME nulls: 2
+PARCEL_NUM nulls: 0 | zeros: 0 | negatives: 0
+PARCEL_NUM digit-length counter (Double field, leading zeros dropped): {12: 37169, 11: 1742, 10: 59} - schednum = str(int(v)).zfill(13) restores the canonical key for every row.
+ZIP zeros (sentinel, treated as unknown): 3436 | ZIP nulls: 773 - ZIP is used for no figure.
+RENEWAL_CREATED sentinel 1/1/1900 rows: 38949 (99.95%) - excluded from every date use;
+the field is used for nothing in this brief. 'Unknown' dates are never placed in a rate denominator.
+
+== 10.1.2 filter polarity (active filter: matched vs excluded) ==
+matched (== License Issued - Active): n = 38949
+excluded (!= active): n = 21 | status counter: Counter({'Delinquent': 21})
+Polarity verified: active is an exact-string equality; the 21 Delinquent rows are
+EXCLUDED from active on both the row basis and the license basis, never merged in.
+Delinquent distinct LICENSE_NUM: 21 | overlap with active LICENSE_NUM: 0
+
+== 10.1.3 numerator/denominator unit agreement ==
+Top-1 share recomputed as licenses/licenses: 525/26939 = 1.95% (ties stats.json).
+Row-basis shares are rows/rows and license-basis shares are licenses/licenses throughout;
+the two bases are never mixed in one figure. Per-1,000 rates are register ROWS over ACS
+housing units and are labeled row rates wherever printed.
+
+== 10.1.5 nullable-denominator trap (name classification) ==
+active rows: denominator = ALL 38949 | counts {'individual_name': 18602, 'business_entity_name': 19230, 'not_determined': 1117} | shares {'individual_name': 47.76, 'business_entity_name': 49.37, 'not_determined': 2.87} | sum = 100.00%
+active licenses: denominator = ALL 26941 | counts {'individual_name': 16012, 'business_entity_name': 9994, 'not_determined': 935} | shares {'individual_name': 59.43, 'business_entity_name': 37.1, 'not_determined': 3.47} | sum = 100.00%
+register rows: denominator = ALL 38970 | counts {'individual_name': 18614, 'business_entity_name': 19239, 'not_determined': 1117} | shares {'individual_name': 47.76, 'business_entity_name': 49.37, 'not_determined': 2.87} | sum = 100.00%
+Determined + not-determined shares sum to 100% on the full stated population in every basis.
+The 2 rows with no ENTITY_NAME are classified not_determined and included in every denominator.
+
+== concentration recomputation (independent of build_stats code path) ==
+License-basis bands tie to stats.json: {'1': 18471, '3-5': 685, '2': 1430, '11+': 65, '6-10': 129}
+Row-basis max per holder = 850 rows (same holder as the 525-license maximum; recomputed).
+
+== grain control: one LICENSE_NUM, one holder, one status ==
+licenses with >1 distinct ENTITY_NAME (raw): 0 | licenses with >1 status: 0
+Control PASSED: no license number mixes statuses; a license is wholly active or wholly not.
+
+== 10.2 built-in control A: single-unit grain check ==
+single-row licenses with a spine TOT_UNITS record: 23909; share whose parcel record
+carries TOT_UNITS == 1: 89.2%. At the single-unit end of the register the grain
+behaves as expected (one row, one unit on the parcel record); the exceptions are the
+multi-unit buildings filed as one row, counted in stats.json grain_check.
+
+== 10.2 built-in control B: multi-row license integrity ==
+11 of the 12 licenses with 100+ rows: 1 holder name, 1 parcel, all-distinct addresses.
+The 12th is a documented exception: 172 rows = 86 unit addresses, each filed TWICE,
+once under each of 2 parcel numbers (one of them the register's largest unmatched
+parcel). Control PASSED with the exception printed: large multi-row licenses enumerate
+unit addresses; the exception is a cross-parcel double filing, counted as published
+and disclosed in stats.json field_hygiene and in the brief (Findings 1 and 5).
+
+== 10.2 join hygiene: parcel bridge + neighborhood assignment ==
+Active bridge: 38427/38,949 rows matched (98.66%);
+unmatched 522 rows on 205 parcels / 213 licenses; the two largest unmatched parcels hold
+157 of the unmatched rows, so the unmatched set is
+concentrated on a small number of parcels, not spread evenly (bridge composition asserted below).
+Neighborhoods: 78 of 78 hold 1+ active rows; zero-row neighborhoods: []
+Physical scale: 38427 assigned active rows over 359,351 allocated ACS housing
+units = 106.9 rows per 1,000 units; licensed matched
+parcels carry 133,839 TOT_UNITS on their
+assessor records against 445,057 citywide on the spine (30.1%).
+
+== STR comparison consistency ==
+STR active 2,083 (2026-10-19 package) vs LTR active licenses 26941 (ratio 12.9x) and LTR active rows 38949 (ratio 18.7x); neighborhood rate Spearman 0.654.
+
+== Section 11 fix-loop gate: Finding 3 parcel block (matched basis) ==
+Finding 3 parcel block recomputed on the matched basis (neighborhood-assigned rows):
+26,394 distinct matched parcels; 2,846 with 2+ rows holding 14,879 rows (38.7% of matched
+rows); 205 parcels with 2+ distinct licenses holding 559 licenses; largest parcel 697 rows
+(North Capitol Hill, 1 license, 229 units on record); second largest 444 rows (Central Park,
+5 licenses, 398 units on record). Every value ties to stats.json parcels_active.
+Bridge composition: pure schednum membership matches 38,450 active rows; 23 of the 522
+unassigned rows sit on 22 parcels present in spine v6 with a null neighborhood value.
+
+== expiry field disagreement (printed, not adjudicated) ==
+Active-status rows whose EXPIRATION_DATE precedes the 2026-10-20 pull: 2 (0.005% of active rows).
+Register-wide past-expiration rows: 23 (21 of them are the Delinquent rows). The brief reports the disagreement and claims
+nothing about any license's validity; the DLCP renewal FAQ's 90-day grace period is cited.
+
+ALL SECTION 10 ASSERTIONS PASSED
